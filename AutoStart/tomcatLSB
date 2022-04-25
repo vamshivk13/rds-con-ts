@@ -1,0 +1,39 @@
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          tomcat
+# Required-Start:    $network $remote_fs $syslog
+# Required-Stop:     $network $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start Tomcat at boot time
+# Description:       Start Tomcat at boot time
+### END INIT INFO
+
+export JAVA_HOME=/usr/lib/jvm/java-17-amazon-corretto.x86_64/
+export CATALINA_HOME=/usr/local/apache-tomcat-9.0.62
+export JAVA_OPTS="-Xms250m -Xmx1024m"
+
+RETVAL=$?
+case $1 in
+start)
+    if [ -f $CATALINA_HOME/bin/startup.sh ];
+    then
+        echo $"Starting Tomcat"
+        su -p -s /bin/sh root $CATALINA_HOME/bin/startup.sh
+    fi
+    ;; 
+stop)   
+    if [ -f $CATALINA_HOME/bin/shutdown.sh ];
+    then
+        echo $"Stopping Tomcat"
+        su -p -s /bin/sh root $CATALINA_HOME/bin/shutdown.sh
+    fi
+    ;; 
+*)
+    echo $"Usage: $0 {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit $RETVAL
